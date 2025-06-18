@@ -243,12 +243,12 @@ def create_presentation(filenames):
     print("PowerPoint presentation created successfully!")
 
 
-np.random.seed(42)  # Set the seed for reproducibility
+np.random.seed(51)  # Set the seed for reproducibility
 
 N = 28
 jp=piqs.jspin(N,"+")
 jm=jp.dag()
-iters = 100
+iters = 10
 
 Q_per_nsc=30#60#0.23 #for N=200
 F_per_nsc=0.#9#0.06 #for N=200
@@ -275,17 +275,18 @@ for n_sc in n_sc_values:
     
     # Bring to equator
     # rho = rotation_y(rho,jy,N,np.pi)
-    rho = rotation(rho, [0,1,0], N, np.pi)
-    
+    init_angle = np.pi#np.random.normal(loc=np.pi, scale=0.1)  # Normal, mean=pi, std=0.1
+    rho = rotation(rho, [0,1,0], N, init_angle)
     
     # OAT dynamics
     for i in tqdm(range(iters)):
         rho = OAT(rho, jz, N, Q_per_nsc, F_per_nsc, n_sc=n_sc, scattering=False)
-        # axis = random_axis_operator()
+        axis = random_axis_operator()
         # print(axis)
         angle = np.pi
-        rho = rotation(rho, [0,1,0], N, angle)
-        # rho = rotation(rho, axis, N, np.pi)
+        rand_angle = np.random.normal(loc=np.pi, scale=0.1)
+        # rho = rotation(rho, [0,1,0], N, angle)
+        rho = rotation(rho, axis, N, rand_angle)
 
     ### Plotting Wigner function ###
     # ISOLATE SYMMETRIC SUBSPACE (S=14 for N=28)
@@ -298,16 +299,13 @@ for n_sc in n_sc_values:
     result = ps.PSrepresentationFromFourier(rho_np, Kcoeffs, 384)
     
     # Plot
-    plt.figure(figsize=(8,8))
     ps.PSrepPlot_plane(result, f'Wigner Function after {iters} OAT Cycles')
     fname = f'iter{0}_Wigner.png'
-    # plt.savefig(fname, bbox_inches='tight')
-    plt.show()
 
     # Simulation parameters
     phi_grid, theta_grid, qfi_avg, qfi_var = calculate_qfi_mesh(rho, jx, jy, jz)
     fname = plot_qfi_mesh(phi_grid, theta_grid, qfi_avg, qfi_var, N, Q_per_nsc, 0)
-    saved_filenames.append(fname)
+    # saved_filenames.append(fname)
 
 # create_presentation(saved_filenames)
    

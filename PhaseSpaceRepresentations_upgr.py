@@ -128,7 +128,7 @@ def PSrepPlot_plane(psFunctionArray,title):#, filename):
     ax.set_ylabel(r'$\theta/\pi$')
 
     #ax.plot_surface(xv, yv, psFunctionArray, cmap='inferno', rstride=1, cstride=1, alpha=None, antialiased=True)
-    # plt.show()#savefig(filename)
+    plt.show()#savefig(filename)
 
 def PSrepPlot_plane_save(psFunctionArray,title,filename):#, filename):
     #psFunctionArray = value at x=phi,y=theta
